@@ -1,0 +1,1 @@
+nvcc -I ../common/inc/ -arch=sm_60 -keep -o vectorAdd vectorAdd.cu
