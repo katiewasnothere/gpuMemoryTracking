@@ -30,7 +30,7 @@
  * number of elements numElements.
  */
 __global__ void
-vectorAdd(const float *A, const float *B, float *C, int numElements)
+vectorAdd(const float *A, const float *B, float *C, int numElements, long *buf)
 {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
 
@@ -144,7 +144,7 @@ main(void)
     int threadsPerBlock = 256;
     int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
     printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
-    vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
+    vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements, d_buf);
     err = cudaGetLastError();
 
     if (err != cudaSuccess)

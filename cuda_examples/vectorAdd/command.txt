@@ -1,1 +1,1 @@
-nvcc -I ../common/inc/ -arch=sm_60 -keep -o vectorAdd vectorAdd.cu
+nvcc -arch=sm_30 -I ../common/inc/ -dryrun  vectorAdd.cu

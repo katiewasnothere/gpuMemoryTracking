@@ -280,6 +280,9 @@ vectorAdd: vectorAdd.o
 run: build
 	$(EXEC) ./vectorAdd
 
+dry: vectorAdd.o
+	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -dryrun -o $@ $+ $(LIBRARIES)
+
 clean:
 	rm -f vectorAdd vectorAdd.o
 #	rm -rf ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/vectorAdd
