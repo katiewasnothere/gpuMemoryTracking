@@ -4,6 +4,8 @@
     MEM_WRITE:
     {
         // put stuff here
+        unsigned long threadId = blockThreadId();
+        
     }
 
 
