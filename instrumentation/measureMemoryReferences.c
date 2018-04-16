@@ -6,6 +6,8 @@
         // insert address in our buffer
         // increment buffer pointer
         // put stuff here
+        unsigned long threadId = blockThreadId();
+        
     }
 
 
