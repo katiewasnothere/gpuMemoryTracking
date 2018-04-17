@@ -1,13 +1,16 @@
 #include <stdlib.h>
+#include <cuda_runtime.h>
+#include <iostream>
+#include <lynx/instrumentation/interface/PTXInstrumentor.h>
 
-namespace instrumentation{
+namespace instrumentation {
     class MemoryReferencesInstrumentor : public PTXInstrumentor {
         
         public:
 
             size_t *buffer;
             unsigned int size;
-
+            unsigned int index;
         public:
 
             MemoryReferencesInstrumentor();
@@ -25,7 +28,7 @@ namespace instrumentation{
     };
 
     MemoryReferencesInstrumentor::MemoryReferencesInstrumentor() :
-    buffer(0), size(0) {
+    buffer(0), size(0), index(0) {
 
     }
         
@@ -39,18 +42,21 @@ namespace instrumentation{
 
     void MemoryReferencesInstrumentor::initialize() {
         //TODO: fix and add where necessary
-
+        
+        // variables for device code
         buffer = 0;
+        index = 0;
 
+        // variable for host code
         //TODO: figure out what size will be
-        size = 500;
+        size = 500; 
 
         if (cudaMalloc((void**) &buffer, size * sizeof(size_t)) != cudaSuccess) {
                 std::cerr << "cudaMalloc failed for buffer allocation" << std::endl;
                 exit(-1);
         }
 
-        if (cudaMalloc(unsigned int*) index, sizeof(unsigned int*) != cudaSuccess) {
+        if (cudaMalloc((void**) &index, sizeof(unsigned int*)) != cudaSuccess) {
             std::cerr << "cudaMalloc failed for index symbol allocation" << std::endl;
             exit(-1);
         }
@@ -67,13 +73,14 @@ namespace instrumentation{
         
     }
 
-    void MemoryReferencesInstrumentor::specificationPath() {
-           return "../instrumentation/measureMemoryReferences.c";
+    std::string MemoryReferencesInstrumentor::specificationPath() {
+        std::string path =  "../instrumentation/measureMemoryReferences.c";  
+        return path;
     }
 
     void MemoryReferencesInstrumentor::extractResults(std::ostream *out) {
         //TODO: can't store mem references until count determined
-        size_t info* = new size_t[size];
+        size_t* info = new size_t[size];
 
         if (buffer) {
             cudaMemcpy(info, buffer, size * sizeof(size_t), cudaMemcpyDeviceToHost);
