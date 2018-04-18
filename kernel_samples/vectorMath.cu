@@ -70,9 +70,12 @@ void runMatrixAdd() {
         printf("Error copying length variable onto gpu");
         exit(-1);
     }
+    
+    int numThreadsPerBlock = min(1024, length); // can have up to 1024 threads per block on our gpu
+    int numBlocks = (length + numThreadsPerBlock - 1) / numThreadsPerBlock;
 
     // TODO: choose more appropriate blocks and threads
-    matrixAdd<<<100,100>>>(d_A, d_B, d_results, d_length);
+    matrixAdd<<<numBlocks,numThreadsPerBlock>>>(d_A, d_B, d_results, d_length);
     cudaDeviceSynchronize();
     
     // get results back

@@ -29,7 +29,7 @@ namespace instrumentation {
 
     MemoryReferencesInstrumentor::MemoryReferencesInstrumentor() :
     buffer(0), size(0), index(0) {
-
+        std::cout << "We're instantiating the instrumentor" << std::endl;
     }
         
     bool MemoryReferencesInstrumentor::validate() {
