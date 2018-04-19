@@ -2,6 +2,7 @@
 #include <cuda_runtime.h>
 #include <iostream>
 #include <lynx/instrumentation/interface/PTXInstrumentor.h>
+#include <lynx/api/interface/lynx.h>
 
 namespace instrumentation {
     class MemoryReferencesInstrumentor : public PTXInstrumentor {
@@ -29,10 +30,11 @@ namespace instrumentation {
 
     MemoryReferencesInstrumentor::MemoryReferencesInstrumentor() :
     buffer(0), size(0), index(0) {
-        std::cout << "We're instantiating the instrumentor" << std::endl;
+    
     }
         
     bool MemoryReferencesInstrumentor::validate() {
+        std::cout << "validaing instrumentor" << std::endl;
         return true;
     }
 
@@ -50,7 +52,8 @@ namespace instrumentation {
         // variable for host code
         //TODO: figure out what size will be
         size = 500; 
-
+        
+        std::cout << "Start allocating space on gpu" << std::endl;
         if (cudaMalloc((void**) &buffer, size * sizeof(size_t)) != cudaSuccess) {
                 std::cerr << "cudaMalloc failed for buffer allocation" << std::endl;
                 exit(-1);
@@ -74,6 +77,7 @@ namespace instrumentation {
     }
 
     std::string MemoryReferencesInstrumentor::specificationPath() {
+        std::cout << "returned the specification path" << std::endl;
         std::string path =  "../instrumentation/measureMemoryReferences.c";  
         return path;
     }
@@ -89,4 +93,14 @@ namespace instrumentation {
     }
 
 
+}
+
+
+extern void runMatrixAdd(); 
+
+int main() { 
+    std::cout << "create the lynx instrumentor" << std::endl;
+    lynx::addInstrumentor(new instrumentation::MemoryReferencesInstrumentor());
+    std::cout << "run kernel" << std::endl;
+    runMatrixAdd();
 }

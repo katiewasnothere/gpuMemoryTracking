@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cuda.h>
+#include <iostream>
 
 __global__ void matrixAdd(int *A, int *B, int *result, int *length) {
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
@@ -11,21 +12,22 @@ __global__ void matrixAdd(int *A, int *B, int *result, int *length) {
 
 void runMatrixAdd() {
     srand(0);
-    int length = rand() + 100; // make sure the length is at least 100
+    int maxLength = 10000;
+    int length = (rand() % maxLength) + 100; // make sure the length is at least 100
     
     // create arrays for algorithm
-    int A[length];
-    int B[length];
-    int results[length];
+    int *A = (int*) malloc (sizeof(int) * length);
+    int *B = (int*) malloc(sizeof(int) * length);
+    int *results = (int*) malloc(sizeof(int) * length);
 
     // fill arrays with random numbers
     for (int i = 0; i < length; i++) {
-        A[i] = rand();
-        B[i] = rand();
+        A[i] = rand() % 1000;
+        B[i] = rand() % 1000;
     }
 
     int *d_A;
-    
+
     if (cudaMalloc((void**) &d_A, length * sizeof(int)) != cudaSuccess) {
         printf("Error allocating for matrix A on gpu");
         exit(-1);
@@ -93,8 +95,3 @@ void runMatrixAdd() {
     }
 }
 
-
-int main(int argc, char** argv) {
-    runMatrixAdd();
-    return 0;
-}
