@@ -35,11 +35,12 @@ static void sassi_finalize(sassi::lazy_allocator::device_reset_reason reason) {
 __device__ void sassi_before_handler(SASSIBeforeParams *bp, SASSIMemoryParams *mp) {
     
     if (bp->GetInstrWillExecute()) {
-        intptr_t mpAddr = mp->GetAddress();
         //only execute if memory operation is a read or write, to be safe
-        if (isMemRead() || isMemWrite()) {
+        if (isMemRead() || isMemWrite()) { 
+            intptr_t mpAddr = mp->GetAddress();
+            intptr baseAddr = mpAddr & ~0x1FF; // mask the lower 9 bits off 
             unsigned int currentIndex  = atomicAdd(index, 1);
-            sassi_references[currentIndex] = mpAddr;
+            sassi_references[currentIndex] = baseAddr;
         }
     }
 }
