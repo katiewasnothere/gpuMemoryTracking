@@ -95,3 +95,8 @@ void runMatrixAdd() {
     }
 }
 
+int main (int argc, char** argv) {
+    runMatrixAdd();
+    return 0;
+}
+
