@@ -41,8 +41,8 @@ __device__ void sassi_before_handler(SASSIBeforeParams *bp, SASSIMemoryParams *m
         if (bp->IsMemRead() || bp->IsMemWrite()) { 
             intptr_t mpAddr = mp->GetAddress();
             intptr_t baseAddr = mpAddr & ~0x1FF; // mask the lower 9 bits off 
-            // unsigned int currentIndex  = atomicAdd(memIndex, 1);
-            // sassi_references[currentIndex] = baseAddr;
+            unsigned int currentIndex  = atomicAdd(memIndex, 1);
+            sassi_references[currentIndex] = baseAddr;
         }
     }
 }
