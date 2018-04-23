@@ -20,4 +20,5 @@ vectorMath: vectorMath.o
 		-L../sassi_instrumentor/lib -lmemReferenceNaive
 
 clean:
-	rm vectorMath.o	
+	rm vectorMath.o
+	rm vectorMath	

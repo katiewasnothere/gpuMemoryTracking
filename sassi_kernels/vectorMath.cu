@@ -80,6 +80,9 @@ void runMatrixAdd() {
     matrixAdd<<<numBlocks,numThreadsPerBlock>>>(d_A, d_B, d_results, d_length);
     cudaDeviceSynchronize();
     
+    std::cout << "The last error was: ";
+    std::cout << cudaGetLastError() << std::endl;    
+
     // get results back
     if (cudaMemcpy(results, d_results, length * sizeof(int), cudaMemcpyDeviceToHost) != cudaSuccess) {
         printf("error getting results back from device");

@@ -17,11 +17,11 @@ install: $(INSTALLED_LIBS)
 	ranlib $@
 
 %.o: %.cu
-	$(NVCC) -D_FORCE_INLINES  $(CC_FLAGS) \
-		$(GEN_CODES)             \
-	    -lineinfo -c -rdc=true -o $@ $^   \
-		--maxrregcount=16          \
-		-I$(SASSI_PATH)/include    \
-		-I$(CUPTI)/include/        \
-		-I$(SASSI_PATH)/include/sassi \
+	$(NVCC) -D_FORCE_INLINES  $(CC_FLAGS) 	\
+		$(GEN_CODES)             			\
+	    -lineinfo -c -rdc=true -o $@ $^   	\
+		--maxrregcount=16          			\
+		-I$(SASSI_PATH)/include    			\
+		-I$(CUPTI)/include/        			\
+		-I$(SASSI_PATH)/include/sassi 		\
 		-I./utils

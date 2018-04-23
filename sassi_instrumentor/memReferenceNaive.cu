@@ -11,7 +11,7 @@
 
 //TO DO: figure out what size this should be
 __managed__ intptr_t sassi_references[BUFFER_SIZE];
-__managed__ unsigned int* memIndex;
+__managed__ unsigned int memIndex = 0;
 
 static void sassi_finalize(sassi::lazy_allocator::device_reset_reason reason) {
     FILE *file = fopen("sassi-memReferences.txt", "a");
@@ -28,9 +28,9 @@ static sassi::lazy_allocator referencesInitializer(
     []() {
         //initialize necessary data structures 
         bzero(sassi_references, sizeof(sassi_references));
-        bzero(memIndex, sizeof(memIndex));
+        // bzero(memIndex, sizeof(memIndex));       
     }, 
-    //get the results after kernel execution
+    // get the results after kernel execution
     sassi_finalize);
 
 
@@ -41,7 +41,7 @@ __device__ void sassi_before_handler(SASSIBeforeParams *bp, SASSIMemoryParams *m
         if (bp->IsMemRead() || bp->IsMemWrite()) { 
             intptr_t mpAddr = mp->GetAddress();
             intptr_t baseAddr = mpAddr & ~0x1FF; // mask the lower 9 bits off 
-            unsigned int currentIndex  = atomicAdd(memIndex, 1);
+            unsigned int currentIndex  = atomicAdd(&memIndex, 1);
             sassi_references[currentIndex] = baseAddr;
         }
     }
