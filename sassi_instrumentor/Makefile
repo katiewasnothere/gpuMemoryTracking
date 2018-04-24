@@ -6,7 +6,8 @@ SASSI_PATH = /usr/local/sassi7
 GEN_CODES = -gencode arch=compute_50,code=sm_50
 CC_FLAGS = -std=c++11 -O3 --compiler-options -Wall
 
-export LIBS := 	libmemReferenceNaive.a \
+export LIBS := 	libmemReferenceNaive.a	  \
+				libmemReferenceCoalesce.a \
 
 INSTALLED_LIBS := $(addprefix ./lib/, $(LIBS))
 
@@ -20,7 +21,9 @@ install: $(INSTALLED_LIBS)
 	$(NVCC) -D_FORCE_INLINES  $(CC_FLAGS) 	\
 		$(GEN_CODES)             			\
 	    -lineinfo -c -rdc=true -o $@ $^   	\
+		-keep 								\
 		--maxrregcount=16          			\
+		--compiler-options -Wall			\
 		-I$(SASSI_PATH)/include    			\
 		-I$(CUPTI)/include/        			\
 		-I$(SASSI_PATH)/include/sassi 		\

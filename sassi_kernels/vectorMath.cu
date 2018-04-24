@@ -8,12 +8,13 @@ __global__ void matrixAdd(int *A, int *B, int *result, int *length) {
     if (threadId < *length) {
         result[threadId] = A[threadId] + B[threadId];
     }
+    return;
 }
 
 void runMatrixAdd() {
     srand(0);
     int maxLength = 10000;
-    int length = (rand() % maxLength) + 100; // make sure the length is at least 100
+    int length = (rand() % maxLength) + maxLength; // make sure the length is at least 100
     
     // create arrays for algorithm
     int *A = (int*) malloc (sizeof(int) * length);
@@ -77,11 +78,12 @@ void runMatrixAdd() {
     int numBlocks = (length + numThreadsPerBlock - 1) / numThreadsPerBlock;
 
     // TODO: choose more appropriate blocks and threads
+
     matrixAdd<<<numBlocks,numThreadsPerBlock>>>(d_A, d_B, d_results, d_length);
     cudaDeviceSynchronize();
     
     std::cout << "The last error was: ";
-    std::cout << cudaGetLastError() << std::endl;    
+    std::cout << cudaGetErrorString(cudaGetLastError()) << std::endl;    
 
     // get results back
     if (cudaMemcpy(results, d_results, length * sizeof(int), cudaMemcpyDeviceToHost) != cudaSuccess) {
