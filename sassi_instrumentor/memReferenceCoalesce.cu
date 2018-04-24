@@ -16,16 +16,14 @@ __managed__ intptr_t sassi_references[BUFFER_SIZE];
 __managed__ unsigned int memIndex;
 
 static void sassi_finalize(sassi::lazy_allocator::device_reset_reason reason) {
-    /*FILE *file = fopen("sassi-memReferencesCoalesce.txt", "a");
+    FILE *file = fopen("sassi-memReferencesCoalesce.txt", "a");
     fprintf(file, "Memory References:\n");
 
     for (unsigned i = 0; i <= BUFFER_SIZE; i++) {
-        if (i == 32767) {
-            fprintf(file, "%p\n", (void*) sassi_references[i]);
-        }
+        fprintf(file, "%p\n", (void*) sassi_references[i]);
     }
     fprintf(file, "\n");
-    fclose(file);*/
+    fclose(file);
 }
 
 static sassi::lazy_allocator referencesInitializer(
@@ -49,14 +47,20 @@ __device__ void sassi_before_handler(SASSIBeforeParams *bp, SASSIMemoryParams *m
                 int shuffleLeader = __ffs(availableThreads) - 1;
                 intptr_t leadersBaseAddr = __broadcast<intptr_t>(baseAddr, shuffleLeader);
                 int matchedThreads = __ballot(leadersBaseAddr == baseAddr);
-                int addLeader = __ffs(matchedThreads) - 1;
-                int threadLaneId = get_laneid();
-                bool isLeader = !(threadLaneId ^ addLeader);
-                /*if (isLeader) {
+                int64_t addLeader = __ffs(matchedThreads) - 1;
+                int64_t threadLaneId = get_laneid();
+
+                asm("{\n\t"
+                        ".reg .pred \tp4; \n\t"
+                        "setp.eq.s64 \tp4, %rd12, %rd11; \n\t"
+                        "@p4 bra \tBB9_3;"
+                        "\n\t}"
+                        : : "l"(addLeader),  "l"(threadLaneId));
+                //if (threadLaneId == addLeader) {
                     unsigned int currentIndex  = atomicAdd(&memIndex, 1);
                     sassi_references[currentIndex] = baseAddr;
-                } */
-                availableThreads =  availableThreads & ~matchedThreads;
+                //} 
+               availableThreads =  availableThreads & ~matchedThreads;
             }
 //        }
    }
