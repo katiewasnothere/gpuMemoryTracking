@@ -41,28 +41,30 @@ __device__ void sassi_before_handler(SASSIBeforeParams *bp, SASSIMemoryParams *m
         if (bp->IsMemRead() || bp->IsMemWrite()) { 
             intptr_t mpAddr = mp->GetAddress();
             intptr_t baseAddr = mpAddr & ~0x1FF; // mask the lower 9 bits off 
-            int availableThreads = __ballot(1);
-//             for ( ; availableThreads != 0; ) {
-            // while (availableThreads != 0) {
+            volatile int availableThreads = __ballot(1);
+
+            asm volatile ("\n Loop:");
+            asm volatile("{\n\t.reg .pred p1; \n\t"
+                "setp.eq.s32 \tp1, %%r1, 0; \n\t"
+                "@p1 bra BB9_3;\n\t"
+                "}\n\t"
+                ::"r"(availableThreads):);
+                
                 int shuffleLeader = __ffs(availableThreads) - 1;
                 intptr_t leadersBaseAddr = __broadcast<intptr_t>(baseAddr, shuffleLeader);
                 int matchedThreads = __ballot(leadersBaseAddr == baseAddr);
                 int64_t addLeader = __ffs(matchedThreads) - 1;
                 int64_t threadLaneId = get_laneid();
-
-                asm("{\n\t"
+                
+                availableThreads = availableThreads & ~matchedThreads;   
+                asm volatile ("{\n\t"
                         ".reg .pred \tp4; \n\t"
                         "setp.eq.s64 \tp4, %rd12, %rd11; \n\t"
-                        "@p4 bra \tBB9_3;"
+                        "@!p4 bra \tLoop;"
                         "\n\t}"
                         : : "l"(addLeader),  "l"(threadLaneId));
-                //if (threadLaneId == addLeader) {
                     unsigned int currentIndex  = atomicAdd(&memIndex, 1);
                     sassi_references[currentIndex] = baseAddr;
-                //} 
-               availableThreads =  availableThreads & ~matchedThreads;
-            }
-//        }
+        }
    }
-   return;
 }
