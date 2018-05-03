@@ -21,7 +21,6 @@ install: $(INSTALLED_LIBS)
 	$(NVCC) -D_FORCE_INLINES  $(CC_FLAGS) 	\
 		$(GEN_CODES)             			\
 	    -lineinfo -c -rdc=true -o $@ $^   	\
-		-keep 								\
 		--maxrregcount=16          			\
 		--compiler-options -Wall			\
 		-I$(SASSI_PATH)/include    			\
