@@ -11,8 +11,16 @@
 .address_size 64
 
 	// .weak	cudaMalloc
-.visible .global .attribute(.managed) .align 8 .b8 sassi_references[262144];
-.visible .global .attribute(.managed) .align 4 .u32 memIndex;
+.extern .func __assertfail
+(
+	.param .b64 __assertfail_param_0,
+	.param .b64 __assertfail_param_1,
+	.param .b32 __assertfail_param_2,
+	.param .b64 __assertfail_param_3,
+	.param .b64 __assertfail_param_4
+)
+;
+.visible .global .attribute(.managed) .align 8 .b8 sassiReferences[8192];
 .global .align 1 .b8 $str[5] = {65, 84, 79, 77, 0};
 .global .align 1 .b8 $str1[6] = {65, 84, 79, 77, 83, 0};
 .global .align 1 .b8 $str2[4] = {66, 50, 82, 0};
@@ -150,6 +158,11 @@
 .global .align 1 .b8 $str134[5] = {86, 79, 84, 69, 0};
 .global .align 1 .b8 $str135[5] = {88, 77, 65, 68, 0};
 .visible .global .attribute(.managed) .align 8 .u64 SASSIInstrOpcodeStrings[136] = {generic($str), generic($str1), generic($str2), generic($str3), generic($str4), generic($str5), generic($str6), generic($str7), generic($str8), generic($str9), generic($str10), generic($str11), generic($str12), generic($str13), generic($str14), generic($str15), generic($str16), generic($str17), generic($str18), generic($str19), generic($str20), generic($str21), generic($str22), generic($str23), generic($str24), generic($str25), generic($str26), generic($str27), generic($str28), generic($str29), generic($str30), generic($str31), generic($str32), generic($str33), generic($str34), generic($str35), generic($str36), generic($str37), generic($str38), generic($str39), generic($str40), generic($str41), generic($str42), generic($str43), generic($str44), generic($str45), generic($str46), generic($str47), generic($str48), generic($str49), generic($str50), generic($str51), generic($str52), generic($str53), generic($str54), generic($str55), generic($str56), generic($str57), generic($str58), generic($str59), generic($str60), generic($str61), generic($str62), generic($str63), generic($str64), generic($str65), generic($str66), generic($str67), generic($str68), generic($str69), generic($str70), generic($str71), generic($str72), generic($str73), generic($str74), generic($str75), generic($str76), generic($str77), generic($str78), generic($str79), generic($str80), generic($str81), generic($str82), generic($str83), generic($str84), generic($str85), generic($str86), generic($str87), generic($str88), generic($str89), generic($str90), generic($str91), generic($str92), generic($str93), generic($str94), generic($str95), generic($str96), generic($str97), generic($str98), generic($str99), generic($str100), generic($str101), generic($str102), generic($str103), generic($str104), generic($str105), generic($str106), generic($str107), generic($str108), generic($str109), generic($str110), generic($str111), generic($str112), generic($str113), generic($str114), generic($str115), generic($str116), generic($str117), generic($str118), generic($str119), generic($str120), generic($str121), generic($str122), generic($str123), generic($str124), generic($str125), generic($str126), generic($str127), generic($str128), generic($str129), generic($str130), generic($str131), generic($str132), generic($str133), generic($str134), generic($str135)};
+.visible .global .align 4 .u32 memIndex;
+.global .align 1 .b8 __T20[68] = {118, 111, 105, 100, 32, 115, 97, 115, 115, 105, 95, 98, 101, 102, 111, 114, 101, 95, 104, 97, 110, 100, 108, 101, 114, 40, 83, 65, 83, 83, 73, 66, 101, 102, 111, 114, 101, 80, 97, 114, 97, 109, 115, 32, 42, 44, 32, 83, 65, 83, 83, 73, 77, 101, 109, 111, 114, 121, 80, 97, 114, 97, 109, 115, 32, 42, 41, 0};
+.global .align 1 .b8 $str136[14] = {98, 97, 115, 101, 65, 100, 100, 114, 32, 33, 61, 32, 48, 0};
+.global .align 1 .b8 $str137[24] = {109, 101, 109, 82, 101, 102, 101, 114, 101, 110, 99, 101, 67, 111, 97, 108, 101, 115, 99, 101, 46, 99, 117, 0};
+.global .align 1 .b8 $str138[18] = {99, 117, 114, 114, 101, 110, 116, 73, 110, 100, 101, 120, 32, 62, 61, 32, 48, 0};
 
 .weak .func  (.param .b32 func_retval0) cudaMalloc(
 	.param .b64 cudaMalloc_param_0,
@@ -255,7 +268,7 @@
 
 
 	ld.param.u64 	%rd1, [_Z10__isSharedPKv_param_0];
-	.loc 5 130 1
+	.loc 6 130 1
 	// inline asm
 	{ 
 	    .reg .pred p; 
@@ -265,7 +278,7 @@
 	
 	// inline asm
 	st.param.b32	[func_retval0+0], %r1;
-	.loc 5 140 1
+	.loc 6 140 1
 	ret;
 }
 
@@ -279,7 +292,7 @@
 
 
 	ld.param.u64 	%rd1, [_Z9__isLocalPKv_param_0];
-	.loc 5 152 1
+	.loc 6 152 1
 	// inline asm
 	{ 
 	    .reg .pred p; 
@@ -289,7 +302,7 @@
 	
 	// inline asm
 	st.param.b32	[func_retval0+0], %r1;
-	.loc 5 162 1
+	.loc 6 162 1
 	ret;
 }
 
@@ -303,7 +316,7 @@
 
 
 	ld.param.u64 	%rd1, [_Z9__isConstPKv_param_0];
-	.loc 5 174 1
+	.loc 6 174 1
 	// inline asm
 	{ 
 	    .reg .pred p; 
@@ -313,7 +326,7 @@
 	
 	// inline asm
 	st.param.b32	[func_retval0+0], %r1;
-	.loc 5 184 1
+	.loc 6 184 1
 	ret;
 }
 
@@ -323,168 +336,235 @@
 	.param .b64 _Z20sassi_before_handlerP17SASSIBeforeParamsP17SASSIMemoryParams_param_1
 )
 {
-	.local .align 4 .b8 	__local_depot9[4];
-	.reg .b64 	%SP;
-	.reg .b64 	%SPL;
-	.reg .pred 	%p<4>;
+	.reg .pred 	%p<9>;
 	.reg .s16 	%rs<4>;
-	.reg .s32 	%r<52>;
-	.reg .s64 	%rd<20>;
+	.reg .s32 	%r<76>;
+	.reg .s64 	%rd<29>;
 
 
-	mov.u64 	%rd19, __local_depot9;
-	cvta.local.u64 	%SP, %rd19;
-	ld.param.u64 	%rd3, [_Z20sassi_before_handlerP17SASSIBeforeParamsP17SASSIMemoryParams_param_0];
-	ld.param.u64 	%rd2, [_Z20sassi_before_handlerP17SASSIBeforeParamsP17SASSIMemoryParams_param_1];
+	ld.param.u64 	%rd5, [_Z20sassi_before_handlerP17SASSIBeforeParamsP17SASSIMemoryParams_param_0];
+	ld.param.u64 	%rd4, [_Z20sassi_before_handlerP17SASSIBeforeParamsP17SASSIMemoryParams_param_1];
 	.loc 1 39 1
-	add.s64 	%rd1, %rd3, 16;
-	ld.u8 	%rs1, [%rd3+16];
+	add.s64 	%rd1, %rd5, 16;
+	ld.u8 	%rs1, [%rd5+16];
 	setp.eq.s16	%p1, %rs1, 0;
-	@%p1 bra 	BB9_3;
+	@%p1 bra 	BB9_11;
 
 	.loc 1 41 8
 	ld.u8 	%rs2, [%rd1+-15];
 	and.b16  	%rs3, %rs2, 3;
 	setp.eq.s16	%p2, %rs3, 0;
-	@%p2 bra 	BB9_3;
+	@%p2 bra 	BB9_11;
 
-	add.u64 	%rd6, %SP, 0;
-	.loc 1 39 1
-	cvta.to.local.u64 	%rd7, %rd6;
 	.loc 1 42 1
-	ld.u64 	%rd8, [%rd2];
-	.loc 1 43 1
-	and.b64  	%rd9, %rd8, -512;
-	mov.u32 	%r2, 1;
+	ld.u64 	%rd2, [%rd4];
+	and.b64  	%rd3, %rd2, -512;
+	mov.u32 	%r21, 1;
 	.loc 3 315 3
 	// inline asm
 	{ 
 	.reg .pred 	%p1; 
-	setp.ne.u32 	%p1, %r2, 0; 
-	vote.ballot.b32 	%r1, %p1; 
+	setp.ne.u32 	%p1, %r21, 0; 
+	vote.ballot.b32 	%r20, %p1; 
 	}
 	// inline asm
-	.loc 1 44 63
-	st.local.u32 	[%rd7], %r1;
-	.loc 1 46 1
+	mov.u32 	%r75, %r20;
+	.loc 6 117 1
 	// inline asm
-	
- Loop:
+	mov.u32 %r22, %laneid;
 	// inline asm
-	.loc 1 47 1
-	ld.local.u32 	%r3, [%rd7];
-	// inline asm
-	{
-	.reg .pred p1; 
-	setp.eq.s32 	p1, %r1, 0; 
-	@p1 bra BB9_3;
-	}
-	
-	// inline asm
-	.loc 1 53 1
-	ld.local.u32 	%r39, [%rd7];
-	.loc 3 1498 10
-	neg.s32 	%r40, %r39;
-	and.b32  	%r41, %r39, %r40;
-	clz.b32 	%r42, %r41;
-	mov.u32 	%r35, 31;
-	.loc 1 53 55
-	sub.s32 	%r34, %r35, %r42;
-	.loc 5 203 1
-	cvt.u32.u64	%r43, %rd8;
-	and.b32  	%r5, %r43, -512;
-	.loc 4 102 1
-	// inline asm
-	shfl.idx.b32 %r4, %r5, %r34, %r35;
-	// inline asm
-	.loc 5 204 59
-	cvt.u64.u32	%rd10, %r4;
-	.loc 5 203 1
-	shr.u64 	%rd11, %rd8, 32;
-	cvt.u32.u64	%r9, %rd11;
-	.loc 4 102 1
-	// inline asm
-	shfl.idx.b32 %r8, %r9, %r34, %r35;
-	// inline asm
-	.loc 5 204 59
-	cvt.u64.u32	%rd12, %r8;
-	shl.b64 	%rd13, %rd12, 32;
-	or.b64  	%rd14, %rd10, %rd13;
-	mov.u32 	%r33, 0;
-	.loc 4 102 1
-	// inline asm
-	shfl.idx.b32 %r12, %r33, %r34, %r35;
-	// inline asm
-	// inline asm
-	shfl.idx.b32 %r16, %r33, %r34, %r35;
-	// inline asm
-	// inline asm
-	shfl.idx.b32 %r20, %r33, %r34, %r35;
-	// inline asm
-	// inline asm
-	shfl.idx.b32 %r24, %r33, %r34, %r35;
-	// inline asm
-	// inline asm
-	shfl.idx.b32 %r28, %r33, %r34, %r35;
-	// inline asm
-	// inline asm
-	shfl.idx.b32 %r32, %r33, %r34, %r35;
-	// inline asm
-	.loc 1 55 1
-	setp.eq.s64	%p3, %rd14, %rd9;
-	selp.u32	%r37, 1, 0, %p3;
-	.loc 3 315 3
-	// inline asm
-	{ 
-	.reg .pred 	%p1; 
-	setp.ne.u32 	%p1, %r37, 0; 
-	vote.ballot.b32 	%r36, %p1; 
-	}
-	// inline asm
-	.loc 3 1498 10
-	neg.s32 	%r44, %r36;
-	and.b32  	%r45, %r36, %r44;
-	clz.b32 	%r46, %r45;
-	.loc 1 56 61
-	sub.s32 	%r47, %r35, %r46;
-	cvt.s64.s32	%rd4, %r47;
-	.loc 5 117 1
-	// inline asm
-	mov.u32 %r38, %laneid;
-	// inline asm
-	.loc 1 57 63
-	cvt.u64.u32	%rd5, %r38;
-	.loc 1 59 1
-	not.b32 	%r48, %r36;
-	ld.local.u32 	%r49, [%rd7];
-	and.b32  	%r50, %r49, %r48;
-	st.local.u32 	[%rd7], %r50;
-	.loc 1 60 1
-	// inline asm
-	{
-	.reg .pred 	p4; 
-	setp.eq.s64 	p4, %rd12, %rd11; 
-	@!p4 bra 	Loop;
-	}
-	// inline asm
-	.loc 3 1520 3
-	mov.u64 	%rd15, memIndex;
-	atom.global.add.u32 	%r51, [%rd15], 1;
-	.loc 1 67 1
-	mul.wide.u32 	%rd16, %r51, 8;
-	mov.u64 	%rd17, sassi_references;
-	add.s64 	%rd18, %rd17, %rd16;
-	st.global.u64 	[%rd18], %rd9;
+	.loc 1 52 1
+	setp.eq.s32	%p3, %r20, 0;
+	@%p3 bra 	BB9_9;
 
-BB9_3:
-	.loc 1 70 2
+	.loc 6 203 1
+	cvt.u32.u64	%r3, %rd3;
+	.loc 6 200 1
+	shr.u64 	%rd6, %rd2, 32;
+	.loc 6 203 1
+	cvt.u32.u64	%r4, %rd6;
+	mov.u32 	%r74, 0;
+	mov.u32 	%r73, %r74;
+	mov.u32 	%r72, %r74;
+	mov.u32 	%r71, %r74;
+	mov.u32 	%r70, %r74;
+	mov.u32 	%r69, %r74;
+
+BB9_4:
+	.loc 3 1498 10
+	neg.s32 	%r63, %r75;
+	and.b32  	%r64, %r75, %r63;
+	clz.b32 	%r65, %r64;
+	mov.u32 	%r60, 31;
+	.loc 1 57 55
+	sub.s32 	%r31, %r60, %r65;
+	.loc 5 102 1
+	// inline asm
+	shfl.idx.b32 %r29, %r3, %r31, %r60;
+	// inline asm
+	.loc 6 204 59
+	cvt.u64.u32	%rd7, %r29;
+	.loc 5 102 1
+	// inline asm
+	shfl.idx.b32 %r33, %r4, %r31, %r60;
+	// inline asm
+	.loc 6 204 59
+	cvt.u64.u32	%rd8, %r33;
+	shl.b64 	%rd9, %rd8, 32;
+	.loc 5 102 1
+	// inline asm
+	shfl.idx.b32 %r37, %r69, %r31, %r60;
+	// inline asm
+	mov.u32 	%r69, %r37;
+	.loc 6 204 59
+	or.b64  	%rd10, %rd7, %rd9;
+	.loc 5 102 1
+	// inline asm
+	shfl.idx.b32 %r41, %r70, %r31, %r60;
+	// inline asm
+	mov.u32 	%r70, %r41;
+	// inline asm
+	shfl.idx.b32 %r45, %r71, %r31, %r60;
+	// inline asm
+	mov.u32 	%r71, %r45;
+	// inline asm
+	shfl.idx.b32 %r49, %r72, %r31, %r60;
+	// inline asm
+	mov.u32 	%r72, %r49;
+	// inline asm
+	shfl.idx.b32 %r53, %r73, %r31, %r60;
+	// inline asm
+	mov.u32 	%r73, %r53;
+	// inline asm
+	shfl.idx.b32 %r57, %r74, %r31, %r60;
+	// inline asm
+	mov.u32 	%r74, %r57;
+	.loc 1 61 1
+	setp.eq.s64	%p4, %rd10, %rd3;
+	selp.u32	%r62, 1, 0, %p4;
+	.loc 3 315 3
+	// inline asm
+	{ 
+	.reg .pred 	%p1; 
+	setp.ne.u32 	%p1, %r62, 0; 
+	vote.ballot.b32 	%r61, %p1; 
+	}
+	// inline asm
+	.loc 1 64 1
+	not.b32 	%r66, %r61;
+	and.b32  	%r75, %r75, %r66;
+	.loc 1 67 1
+	setp.ne.s32	%p5, %r22, %r31;
+	@%p5 bra 	BB9_8;
+
+	.loc 3 1520 3
+	mov.u64 	%rd11, memIndex;
+	atom.global.add.u32 	%r19, [%rd11], 1;
+	.loc 1 69 1
+	setp.gt.s32	%p6, %r19, -1;
+	@%p6 bra 	BB9_7;
+
+	.loc 4 239 1
+	mov.u64 	%rd12, $str138;
+	cvta.global.u64 	%rd13, %rd12;
+	mov.u64 	%rd14, $str137;
+	cvta.global.u64 	%rd15, %rd14;
+	mov.u64 	%rd16, __T20;
+	cvta.global.u64 	%rd17, %rd16;
+	mov.u32 	%r67, 69;
+	mov.u64 	%rd18, 1;
+	.loc 4 239 1
+	// Callseq Start 0
+	{
+	.reg .b32 temp_param_reg;
+	// <end>}
+	.param .b64 param0;
+	st.param.b64	[param0+0], %rd13;
+	.param .b64 param1;
+	st.param.b64	[param1+0], %rd15;
+	.param .b32 param2;
+	st.param.b32	[param2+0], %r67;
+	.param .b64 param3;
+	st.param.b64	[param3+0], %rd17;
+	.param .b64 param4;
+	st.param.b64	[param4+0], %rd18;
+	call.uni 
+	__assertfail, 
+	(
+	param0, 
+	param1, 
+	param2, 
+	param3, 
+	param4
+	);
+	
+	//{
+	}// Callseq End 0
+
+BB9_7:
+	.loc 1 71 1
+	mul.wide.s32 	%rd19, %r19, 8;
+	mov.u64 	%rd20, sassiReferences;
+	add.s64 	%rd21, %rd20, %rd19;
+	st.global.u64 	[%rd21], %rd3;
+
+BB9_8:
+	.loc 1 52 1
+	setp.ne.s32	%p7, %r75, 0;
+	@%p7 bra 	BB9_4;
+
+BB9_9:
+	.loc 1 53 1
+	setp.ne.s64	%p8, %rd3, 0;
+	@%p8 bra 	BB9_11;
+
+	.loc 4 239 1
+	mov.u64 	%rd22, $str136;
+	cvta.global.u64 	%rd23, %rd22;
+	mov.u64 	%rd24, $str137;
+	cvta.global.u64 	%rd25, %rd24;
+	mov.u64 	%rd26, __T20;
+	cvta.global.u64 	%rd27, %rd26;
+	mov.u32 	%r68, 53;
+	mov.u64 	%rd28, 1;
+	.loc 4 239 1
+	// Callseq Start 1
+	{
+	.reg .b32 temp_param_reg;
+	// <end>}
+	.param .b64 param0;
+	st.param.b64	[param0+0], %rd23;
+	.param .b64 param1;
+	st.param.b64	[param1+0], %rd25;
+	.param .b32 param2;
+	st.param.b32	[param2+0], %r68;
+	.param .b64 param3;
+	st.param.b64	[param3+0], %rd27;
+	.param .b64 param4;
+	st.param.b64	[param4+0], %rd28;
+	call.uni 
+	__assertfail, 
+	(
+	param0, 
+	param1, 
+	param2, 
+	param3, 
+	param4
+	);
+	
+	//{
+	}// Callseq End 1
+
+BB9_11:
+	.loc 1 76 2
 	ret;
 }
 
-	.file	1 "/home/kbaldauf/gpuMemoryTracking/sassi_instrumentor/memReferenceCoalesce.cu", 1524617174, 2656
+	.file	1 "/home/kbaldauf/gpuMemoryTracking/sassi_instrumentor/memReferenceCoalesce.cu", 1525315509, 2694
 	.file	2 "/usr/local/sassi7/include/cuda_device_runtime_api.h", 1524266470, 13858
 	.file	3 "/usr/local/sassi7/include/device_functions.hpp", 1524266470, 136970
-	.file	4 "/usr/local/sassi7/include/sm_30_intrinsics.hpp", 1524266470, 12733
-	.file	5 "/home/kbaldauf/gpuMemoryTracking/sassi_instrumentor/./utils/sassi_intrinsics.h", 1524277294, 7393
-	.file	6 "/usr/local/sassi7/include/sassi/sassi-core.hpp", 1459533435, 13220
+	.file	4 "/usr/local/sassi7/include/crt/device_runtime.h", 1524266470, 8065
+	.file	5 "/usr/local/sassi7/include/sm_30_intrinsics.hpp", 1524266470, 12733
+	.file	6 "/home/kbaldauf/gpuMemoryTracking/sassi_instrumentor/./utils/sassi_intrinsics.h", 1524277294, 7393
+	.file	7 "/usr/local/sassi7/include/sassi/sassi-core.hpp", 1459533435, 13220
 

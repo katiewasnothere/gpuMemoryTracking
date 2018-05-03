@@ -1,5 +1,6 @@
 #include <cupti.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <unistd.h>
@@ -9,18 +10,18 @@
 #include "sassi_intrinsics.h"
 
 #define WARP_SIZE   32
-#define BUFFER_SIZE (WARP_SIZE*WARP_SIZE*WARP_SIZE)
+#define BUFFER_SIZE (WARP_SIZE*WARP_SIZE)
 
-//TO DO: figure out what size this should be
-__managed__ intptr_t sassi_references[BUFFER_SIZE];
-__managed__ unsigned int memIndex;
+//NOTE: this size must be changed depending on the program being used
+__managed__ intptr_t sassiReferences[BUFFER_SIZE];
+__device__ unsigned int memIndex = 0;
 
 static void sassi_finalize(sassi::lazy_allocator::device_reset_reason reason) {
     FILE *file = fopen("sassi-memReferencesCoalesce.txt", "a");
     fprintf(file, "Memory References:\n");
 
     for (unsigned i = 0; i <= BUFFER_SIZE; i++) {
-        fprintf(file, "%p\n", (void*) sassi_references[i]);
+        fprintf(file, "%p\n", (void*) sassiReferences[i]);
     }
     fprintf(file, "\n");
     fclose(file);
@@ -29,8 +30,7 @@ static void sassi_finalize(sassi::lazy_allocator::device_reset_reason reason) {
 static sassi::lazy_allocator referencesInitializer(
     []() {
         //initialize necessary data structures 
-        bzero(sassi_references, sizeof(sassi_references));
-        bzero(&memIndex, sizeof(memIndex));
+        bzero(sassiReferences, sizeof(sassiReferences));
     }, 
     // get the results after kernel execution
     sassi_finalize);
@@ -39,32 +39,38 @@ __device__ void sassi_before_handler(SASSIBeforeParams *bp, SASSIMemoryParams *m
     if (bp->GetInstrWillExecute()) {
         //only execute if memory operation is a read or write, to be safe
         if (bp->IsMemRead() || bp->IsMemWrite()) { 
-            intptr_t mpAddr = mp->GetAddress();
-            intptr_t baseAddr = mpAddr & ~0x1FF; // mask the lower 9 bits off 
-            volatile int availableThreads = __ballot(1);
+            intptr_t baseAddr = mp->GetAddress() & ~0x1FF;
+            
+            int availableThreads = __ballot(1);
+            int threadLaneId = get_laneid();
+            intptr_t leadersBaseAddr = NULL;
+            int shuffleLeader = 0;
+            int matchedThreads = 0;
 
-            asm volatile ("\n Loop:");
-            asm volatile("{\n\t.reg .pred p1; \n\t"
-                "setp.eq.s32 \tp1, %%r1, 0; \n\t"
-                "@p1 bra BB9_3;\n\t"
-                "}\n\t"
-                ::"r"(availableThreads):);
+Loop:
+            // check conditions 
+            if (availableThreads == 0 ){
+                assert(baseAddr != 0);
+                return;
+            }
+            // choose a leader and broadcast it's base address
+            shuffleLeader = __ffs(availableThreads) - 1;
+            leadersBaseAddr = __broadcast<intptr_t>(baseAddr, shuffleLeader);
                 
-                int shuffleLeader = __ffs(availableThreads) - 1;
-                intptr_t leadersBaseAddr = __broadcast<intptr_t>(baseAddr, shuffleLeader);
-                int matchedThreads = __ballot(leadersBaseAddr == baseAddr);
-                int64_t addLeader = __ffs(matchedThreads) - 1;
-                int64_t threadLaneId = get_laneid();
-                
-                availableThreads = availableThreads & ~matchedThreads;   
-                asm volatile ("{\n\t"
-                        ".reg .pred \tp4; \n\t"
-                        "setp.eq.s64 \tp4, %rd12, %rd11; \n\t"
-                        "@!p4 bra \tLoop;"
-                        "\n\t}"
-                        : : "l"(addLeader),  "l"(threadLaneId));
-                    unsigned int currentIndex  = atomicAdd(&memIndex, 1);
-                    sassi_references[currentIndex] = baseAddr;
+            // find the threads in the warp with a matching base address
+            matchedThreads = __ballot(leadersBaseAddr == baseAddr);
+
+            // update the number of threads who's address needs to be checked
+            availableThreads = availableThreads & ~matchedThreads;   
+               
+           // if this thread is the leader, add the base addr to global array 
+            if (threadLaneId == shuffleLeader) {
+                int currentIndex  = atomicAdd(&memIndex, 1);
+                assert(currentIndex >= 0);
+                // will only ever access an index once, so this is safe
+                sassiReferences[currentIndex] = baseAddr;
+            }
+            goto Loop;
         }
-   }
+    }
 }
