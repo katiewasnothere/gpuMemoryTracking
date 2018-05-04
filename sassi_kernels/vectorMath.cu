@@ -14,7 +14,7 @@ __global__ void vectorAdd(int *A, int *B, int *result, int *length) {
 void runVectorAdd() {
     srand(0);
     int maxLength = 10000;
-    int length = (rand() % maxLength) + maxLength; // make sure the length is at least 100
+    int length = (rand() % maxLength) + maxLength; // make sure the length is at least the size of maxLength
     
     // create arrays for algorithm
     int *A = (int*) malloc (sizeof(int) * length);
@@ -26,16 +26,7 @@ void runVectorAdd() {
         A[i] = rand() % 1000;
         B[i] = rand() % 1000;
     }
-
-    size_t currentLimit = 0; 
-    cudaDeviceGetLimit(&currentLimit, cudaLimitStackSize);
-    printf("The current limit is %lu\n", currentLimit);
-
-    cudaDeviceSetLimit(cudaLimitStackSize, currentLimit * 5);
-
-    cudaDeviceGetLimit(&currentLimit, cudaLimitStackSize);
-    printf("The current limit is %lu\n", currentLimit);
-    
+  
     int *d_A;
 
     if (cudaMalloc((void**) &d_A, length * sizeof(int)) != cudaSuccess) {
@@ -90,9 +81,8 @@ void runVectorAdd() {
     cudaDeviceSynchronize();
     
     std::cout << "The last error was: ";
-    //std::cout << cudaGetErrorString(cudaGetLastError()) << std::endl;    
+    std::cout << cudaGetErrorString(cudaGetLastError()) << std::endl;    
     
-    std::cout  << cudaGetLastError() << std::endl;
     // get results back
     if (cudaMemcpy(results, d_results, length * sizeof(int), cudaMemcpyDeviceToHost) != cudaSuccess) {
         printf("error getting results back from device");

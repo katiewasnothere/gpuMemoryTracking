@@ -31,9 +31,27 @@ coalesce: vectorMath.o
 		$(CUPTI_INC)									\
 		-L../sassi_instrumentor/lib -lmemReferenceCoalesce
 
+matrixMultiply.o: matrixMultiply.cu
+	/usr/local/sassi7/bin/nvcc -D_FORCE_INLINES -c -O3 \
+			$(GEN_CODE)								\
+			$(SASSI_FLAGS)							\
+			-dc 									\
+			-o matrixMultiply.o matrixMultiply.cu
+
+matrix: matrixMultiply.o
+	/usr/local/sassi7/bin/nvcc -D_FORCE_INLINES	-O3		\
+		-o matrixMultiply matrixMultiply.o 						\
+		$(EXTRA_LINK_FLAGS) 							\
+		$(GEN_CODE)										\
+		$(CUPTI_INC)									\
+		-L../sassi_instrumentor/lib -lmemReferenceCoalesce
+
+
 clean:
 	rm -f vectorMath.o
 	rm -f vectorMathNaive 
 	rm -f vectorMathCoalesce
+	rm -r matrixMultiply.o
+	rm -r matrixMultiply
 
 r: clean all
